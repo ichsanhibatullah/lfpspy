@@ -1,11 +1,13 @@
 """Import modules into the lfpspy namespace."""
 
-__all__ = ["LFPS"]
+#__all__ = ["Spectral", "WindowReject", "Polarization", "Result"]
 
 import logging
 
-from .lfps import LFPS
-from .fdwr import FDWR
+from .spectral import Spectral
+from .windowreject import WindowReject
+from .polarization import Polarization
+from .result import Result
 from .utils import *
 
 logging.getLogger('lfpspy').addHandler(logging.NullHandler())
