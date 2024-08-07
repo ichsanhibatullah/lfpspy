@@ -3,4 +3,5 @@ numpy==1.20.0
 obspy==1.4.0
 pandas==1.4.4
 scipy==1.10.1
+pillow==9.0.0
 openpyxl
