@@ -8,8 +8,8 @@ st = time.time()
 
 # Define file (per station) or folder (all station), window length, and other parameters that will be used
 dir = "C:/Users/PC-MSI/Downloads/five_raw_data_example"
-window = 60 #in seconds; window length
-n_input_vh, n_input_psd = 2, 2 # n parameter to decide how much we want to reject; depending on variance of the data
+window, overlap = 60, 0.5 # window length in seconds; how much we want our data overlap per window
+n_input_vh, n_input_psd, max_iter = 2, 2, 50 # n parameter to decide how much we want to reject; depending on variance of the data
 lb, hb_vh, hb_psd = 1, 6, 4 #in Hz; lower bound (both) and upper bound (each) for limiting the zone of interest in vhsr and psd
 
 ########################################   SPECTRAL ANALYSIS   ########################################
@@ -25,16 +25,16 @@ for fname in os.listdir(dir):
         spc, wr, res = Spectral(fname, win_length=window), WindowReject(fname, window), Result(fname, window)
 
         # Performing spectral ratio and power spectral density processing
-        vh_res, vh_avg, vh_std, vh_int_bfr, psd_res, psd_avg, psd_std, psd_iz_bfr = spc.calculate(width=0.1, lc=0.5, hc=10, fs=100, order=5, d=0.5, overlap=True)
+        vh_res, vh_avg, vh_std, vh_int_bfr, psd_res, psd_avg, psd_std, psd_iz_bfr = spc.calculate(width=0.1, lc=0.5, hc=10, fs=100, order=5, d=overlap, overlap=True)
 
         # Applying window rejection to spectral ratio and power spectral density result; Achieving better result
         # Performing Frequency-domain Window-rejection algorithm (Cox et.al., 2020)
         print('---------------------------{}---------------------------'.format(fname.split("\\")[-1]))
         vh_reject, vh_med_curve, vh_std_curve, vh_med_f0_bfr, vh_std_f0_bfr, vh_med_f0_aft, vh_std_f0_aft, vh_n, vh_acc = wr.calculate(
-            vh_res, n=n_input_vh, max_iter=50)
+            vh_res, n=n_input_vh, max_iter=max_iter)
         vh_int_aft = spc.integral_area_vhsr(vh_med_curve)
         psd_reject, psd_med_curve, psd_std_curve, psd_med_f0_bfr, psd_std_f0_bfr, psd_med_f0_aft, psd_std_f0_aft, psd_n, psd_acc = wr.calculate(
-            psd_res, n=n_input_psd, max_iter=50)
+            psd_res, n=n_input_psd, max_iter=max_iter)
         psd_iz_aft = spc.integral_area_psd(psd_med_curve)
         print('------------------------------------------------------------------------------')
 
@@ -65,7 +65,7 @@ for fname in os.listdir(dir):
         plr, res = Polarization(fname, win_length=window), Result(fname, window)
 
         # Performing polarization analysis on raw passive seismic data
-        azimuth, incidence, rectilinearity, planarity, max_eig, xtime = plr.calculate(lc=0.5, hc=10, fs=100, order=5, d=0.5, overlap=True)
+        azimuth, incidence, rectilinearity, planarity, max_eig, xtime = plr.calculate(lc=0.5, hc=10, fs=100, order=5, d=overlap, overlap=True)
 
         # Plotting and saving the result of each iteration
         res.plot_polar(azimuth, incidence, rectilinearity, planarity, max_eig, xtime, batch_proc=True) # Change batch_proc to True for batch processing
