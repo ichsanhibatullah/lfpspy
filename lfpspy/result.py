@@ -19,11 +19,11 @@ class Result(Spectral):
                       vh_med_f0_bfr, vh_std_f0_bfr, vh_med_f0_aft, vh_std_f0_aft, vh_int_bfr,
                       vh_int_aft, vh_n, psd_res, psd_reject, psd_avg, psd_med_curve,
                       psd_std, psd_std_curve, psd_med_f0_bfr, psd_std_f0_bfr, psd_med_f0_aft,
-                      psd_std_f0_aft, psd_iz_bfr, psd_iz_aft, psd_n, low_bound=1,
-                      high_bound_vh=6, high_bound_psd=4, xmin=0.5, xmax=10, ymin=0, ymax_vh=10,
+                      psd_std_f0_aft, psd_iz_bfr, psd_iz_aft, psd_n, low_bound_vh=1, high_bound_vh=6,
+                      low_bound_psd=1, high_bound_psd=4, xmin=0.5, xmax=10, ymin=0, ymax_vh=10,
                       ymax_psd=1, batch_proc:bool=False):
         # Limiting the Peak, IF the peak is out of the interest range
-        frq_lb, frq_hb_vh, frq_hb_psd = self.frq.tolist().index(low_bound), self.frq.tolist().index(high_bound_vh), self.frq.tolist().index(high_bound_psd) #hz      
+        frq_lb_vh, frq_hb_vh, frq_lb_psd, frq_hb_psd = self.frq.tolist().index(low_bound_vh), self.frq.tolist().index(high_bound_vh), self.frq.tolist().index(low_bound_psd), self.frq.tolist().index(high_bound_psd) #hz      
 
         # Plotting
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(12, 10))
@@ -56,10 +56,10 @@ class Result(Spectral):
                 markerfacecolor='lime', markeredgewidth=1, markeredgecolor='k',
                 label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f})".format("{mc}", self.frq[vh_avg.tolist().index(max(vh_avg))], max(vh_avg))) 
 
-        if vh_avg.tolist().index(max(vh_avg))<frq_lb or vh_avg.tolist().index(max(vh_avg))>frq_hb_vh:
-            ax1.plot(self.frq[vh_avg.tolist().index(max(vh_avg[frq_lb:frq_hb_vh]))], max(vh_avg[frq_lb:frq_hb_vh]), linestyle="", marker='D', markersize=6,
+        if vh_avg.tolist().index(max(vh_avg))<frq_lb_vh or vh_avg.tolist().index(max(vh_avg))>frq_hb_vh:
+            ax1.plot(self.frq[vh_avg.tolist().index(max(vh_avg[frq_lb_vh:frq_hb_vh]))], max(vh_avg[frq_lb_vh:frq_hb_vh]), linestyle="", marker='D', markersize=6,
                     markerfacecolor='gold', markeredgewidth=1, markeredgecolor='k',
-                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f})".format("{mc2}", self.frq[vh_avg.tolist().index(max(vh_avg[frq_lb:frq_hb_vh]))], max(vh_avg[frq_lb:frq_hb_vh])))
+                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f})".format("{mc2}", self.frq[vh_avg.tolist().index(max(vh_avg[frq_lb_vh:frq_hb_vh]))], max(vh_avg[frq_lb_vh:frq_hb_vh])))
 
         # Plot Integral VHSR
         ax1.fill_between(self.frq, 1, vh_avg, color="b", label='Integral-VHSR = {:.5f}'.format(vh_int_bfr), where=(vh_avg>=1)&(self.frq>=1)&(self.frq<=6), alpha=0.75)
@@ -110,10 +110,10 @@ class Result(Spectral):
                         markerfacecolor='lime', markeredgewidth=1, markeredgecolor='k',
                         label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f})".format("{mc}", self.frq[vh_med_curve.tolist().index(max(vh_med_curve))], max(vh_med_curve)))
 
-        if vh_med_curve.tolist().index(max(vh_med_curve))<frq_lb or vh_med_curve.tolist().index(max(vh_med_curve))>frq_hb_vh:
-            ax2.plot(self.frq[vh_med_curve.tolist().index(max(vh_med_curve[frq_lb:frq_hb_vh]))], max(vh_med_curve[frq_lb:frq_hb_vh]), linestyle="", marker='D', markersize=6,
+        if vh_med_curve.tolist().index(max(vh_med_curve))<frq_lb_vh or vh_med_curve.tolist().index(max(vh_med_curve))>frq_hb_vh:
+            ax2.plot(self.frq[vh_med_curve.tolist().index(max(vh_med_curve[frq_lb_vh:frq_hb_vh]))], max(vh_med_curve[frq_lb_vh:frq_hb_vh]), linestyle="", marker='D', markersize=6,
                     markerfacecolor='gold', markeredgewidth=1, markeredgecolor='k',
-                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f})".format("{mc2}", self.frq[vh_med_curve.tolist().index(max(vh_med_curve[frq_lb:frq_hb_vh]))], max(vh_med_curve[frq_lb:frq_hb_vh])))
+                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f})".format("{mc2}", self.frq[vh_med_curve.tolist().index(max(vh_med_curve[frq_lb_vh:frq_hb_vh]))], max(vh_med_curve[frq_lb_vh:frq_hb_vh])))
 
         # Plot Integral VHSR
         ax2.fill_between(self.frq, 1, vh_med_curve, color="b", label='Integral-VHSR = {:.5f}'.format(vh_int_aft), where=(vh_med_curve>=1)&(self.frq>=1)&(self.frq<=6), alpha=0.75)
@@ -147,10 +147,10 @@ class Result(Spectral):
                 markerfacecolor='lime', markeredgewidth=1, markeredgecolor='k',
                 label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f} $Count^2/Hz$)".format("{mc}", self.frq[psd_avg.tolist().index(max(psd_avg))], max(psd_avg)))
 
-        if psd_avg.tolist().index(max(psd_avg))<frq_lb or psd_avg.tolist().index(max(psd_avg))>frq_hb_psd:
-            ax3.plot(self.frq[psd_avg.tolist().index(max(psd_avg[frq_lb:frq_hb_psd]))], max(psd_avg[frq_lb:frq_hb_psd]), linestyle="", marker='D', markersize=6,
+        if psd_avg.tolist().index(max(psd_avg))<frq_lb_psd or psd_avg.tolist().index(max(psd_avg))>frq_hb_psd:
+            ax3.plot(self.frq[psd_avg.tolist().index(max(psd_avg[frq_lb_psd:frq_hb_psd]))], max(psd_avg[frq_lb_psd:frq_hb_psd]), linestyle="", marker='D', markersize=6,
                     markerfacecolor='gold', markeredgewidth=1, markeredgecolor='k',
-                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f} $Count^2/Hz$)".format("{mc2}", self.frq[psd_avg.tolist().index(max(psd_avg[frq_lb:frq_hb_psd]))], max(psd_avg[frq_lb:frq_hb_psd])))
+                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f} $Count^2/Hz$)".format("{mc2}", self.frq[psd_avg.tolist().index(max(psd_avg[frq_lb_psd:frq_hb_psd]))], max(psd_avg[frq_lb_psd:frq_hb_psd])))
 
         # Plot Integral PSD-Z
         ax3.fill_between(self.frq, 0, psd_avg, color="b", label='PSD-IZ = {:.5f}'.format(psd_iz_bfr), where=(psd_avg>=0)&(self.frq>=1)&(self.frq<=4), alpha=0.75)
@@ -188,10 +188,10 @@ class Result(Spectral):
                 markerfacecolor='lime', markeredgewidth=1, markeredgecolor='k',
                 label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f} $Count^2/Hz$)".format("{mc}", self.frq[psd_med_curve.tolist().index(max(psd_med_curve))], max(psd_med_curve)))
 
-        if psd_med_curve.tolist().index(max(psd_med_curve))<frq_lb or psd_med_curve.tolist().index(max(psd_med_curve))>frq_hb_psd:
-            ax4.plot(self.frq[psd_med_curve.tolist().index(max(psd_med_curve[frq_lb:frq_hb_psd]))], max(psd_med_curve[frq_lb:frq_hb_psd]), linestyle="", marker='D', markersize=6,
+        if psd_med_curve.tolist().index(max(psd_med_curve))<frq_lb_psd or psd_med_curve.tolist().index(max(psd_med_curve))>frq_hb_psd:
+            ax4.plot(self.frq[psd_med_curve.tolist().index(max(psd_med_curve[frq_lb_psd:frq_hb_psd]))], max(psd_med_curve[frq_lb_psd:frq_hb_psd]), linestyle="", marker='D', markersize=6,
                     markerfacecolor='gold', markeredgewidth=1, markeredgecolor='k',
-                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f} $Count^2/Hz$)".format("{mc2}", self.frq[psd_med_curve.tolist().index(max(psd_med_curve[frq_lb:frq_hb_psd]))], max(psd_med_curve[frq_lb:frq_hb_psd])))
+                    label="Peak$_{}$ at ({:.2f} $Hz$, {:.2f} $Count^2/Hz$)".format("{mc2}", self.frq[psd_med_curve.tolist().index(max(psd_med_curve[frq_lb_psd:frq_hb_psd]))], max(psd_med_curve[frq_lb_psd:frq_hb_psd])))
 
         # Plot Integral PSD-Z
         # Plot Integral PSD-Z

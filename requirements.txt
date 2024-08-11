@@ -5,3 +5,4 @@ pandas==1.4.4
 scipy==1.10.1
 pillow==9.0.0
 openpyxl
+ipykernel

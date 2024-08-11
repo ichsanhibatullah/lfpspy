@@ -253,7 +253,7 @@ class Spectral():
     #end of region: integral area
 
     #region whole process
-    def calculate(self, width=0.1, lc=0.5, hc=10, fs=100, order=5, d=0.5, overlap=True):
+    def calculate(self, lb_vh=1, hb_vh=6, lb_psd=1, hb_psd=4, width=0.1, lc=0.5, hc=10, fs=100, order=5, d=0.5, overlap=True):
         # Preprocess data
         prepZ, prepN, prepE, one_norm_prepZ = self.preprocessing(width, lc, hc, fs, order, d, overlap)
 
@@ -268,7 +268,8 @@ class Spectral():
         avg_vhsr = self.signal_stat(vhsr_smooth_zero, mode="median")
 
         # Integral area calculation of desired range; before rejection
-        vhsr_integral_bfr = self.integral_area_vhsr(avg_vhsr)
-        psd_iz_bfr = self.integral_area_psd(avg_psd)
+        vhsr_integral_bfr = self.integral_area_vhsr(avg_vhsr, lb_vh, hb_vh)
+        psd_iz_bfr = self.integral_area_psd(avg_psd, lb_psd, hb_psd)
         return vhsr_smooth_zero, avg_vhsr, std_vhsr, vhsr_integral_bfr, smooth_psd, avg_psd, std_psd, psd_iz_bfr #, vhsr_bfr_mean_f0, vhsr_bfr_std_f0, psd_bfr_mean_f0, psd_bfr_std_f0
     #end of region: whole process
+# TODO: define low and high bound of psd and vhsr zone of interest, so users can customize it

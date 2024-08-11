@@ -14,39 +14,39 @@ def create_df_polar():
                                 'Rectilinearity', 'Planarity', 'Max Eigenvalue'])
     return df
 
-def list_spectral(df, comp, frq, frq_bb, frq_ba_vh, frq_ba_psd, vh_int_aft,
+def list_spectral(df, comp, frq, frq_bb_vh, frq_ba_vh, frq_bb_psd, frq_ba_psd, vh_int_aft,
                     vh_med_curve, vh_acc, psd_iz_aft, psd_med_curve, psd_acc):
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'Station'] = '{}'.format(comp.stats.station)
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'V/H Integral'] = vh_int_aft
-    df.loc[int(comp.stats.station),
-                            'V/H Max Ratio'] = max(vh_med_curve[frq_bb:frq_ba_vh])
-    df.loc[int(comp.stats.station),
-                            'Frequency Max Amplitude VHSR (Hz)'] = frq[vh_med_curve.tolist().index(max(vh_med_curve[frq_bb:frq_ba_vh]))]        
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
+                            'V/H Max Ratio'] = max(vh_med_curve[frq_bb_vh:frq_ba_vh])
+    df.loc[comp.stats.station,
+                            'Frequency Max Amplitude VHSR (Hz)'] = frq[vh_med_curve.tolist().index(max(vh_med_curve[frq_bb_vh:frq_ba_vh]))]        
+    df.loc[comp.stats.station,
                             'PSD-IZ'] = psd_iz_aft
-    df.loc[int(comp.stats.station),
-                            'PSD-Z Max Amplitude (Count^2/Hz)'] = max(psd_med_curve[frq_bb:frq_ba_psd])
-    df.loc[int(comp.stats.station),
-                            'Frequency Max Amplitude PSD-Z (Hz)'] = frq[psd_med_curve.tolist().index(max(psd_med_curve[frq_bb:frq_ba_psd]))]
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
+                            'PSD-Z Max Amplitude (Count^2/Hz)'] = max(psd_med_curve[frq_bb_psd:frq_ba_psd])
+    df.loc[comp.stats.station,
+                            'Frequency Max Amplitude PSD-Z (Hz)'] = frq[psd_med_curve.tolist().index(max(psd_med_curve[frq_bb_psd:frq_ba_psd]))]
+    df.loc[comp.stats.station,
                             'VHSR window accepted'] = vh_acc
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'PSD-Z window accepted'] = psd_acc
 
 def list_polar(df, comp, azimuth, incidence, rectilinearity, planarity, max_eig):
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'Station'] = '{}'.format(comp.stats.station)
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'Azimuth: Stability'] = np.var(azimuth)
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'Incidence Angle (°)'] = np.mean(incidence)
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'Rectilinearity'] = np.mean(rectilinearity)
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'Planarity'] = np.mean(planarity)
-    df.loc[int(comp.stats.station),
+    df.loc[comp.stats.station,
                             'Max Eigenvalue'] = np.mean(max_eig)        
 
 def to_excel_spectral(df, filename:str="Spectral Analysis Calculation-raw python"):
